@@ -33,10 +33,12 @@ public class MemoryModule extends ReactContextBaseJavaModule {
 
             long totalMemory = memoryInfo.totalMem;
             long availableMemory = memoryInfo.availMem;
+            long usedMemory = totalMemory - availableMemory;
 
             WritableMap map = Arguments.createMap();
             map.putDouble("totalMemory", totalMemory);
             map.putDouble("availableMemory", availableMemory);
+            map.putDouble("usedMemory", usedMemory);
 
             promise.resolve(map);
         } catch (Exception e) {

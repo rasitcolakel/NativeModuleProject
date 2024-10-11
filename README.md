@@ -112,10 +112,12 @@ Oluşturulan MemoryModule'e React Native taraftan erişebileceğimiz `getMemoryI
 
             long totalMemory = memoryInfo.totalMem;
             long availableMemory = memoryInfo.availMem;
+            long usedMemory = totalMemory - availableMemory;
 
             WritableMap map = Arguments.createMap();
             map.putDouble("totalMemory", totalMemory);
             map.putDouble("availableMemory", availableMemory);
+            map.putDouble("usedMemory", usedMemory);
 
             promise.resolve(map);
         } catch (Exception e) {
@@ -141,6 +143,134 @@ MemoryInfo.getMemoryInfo().then((memoryInfo) => {
 ```json
 {
   "availableMemory": 1124524032,
-  "totalMemory": 2074894336
+  "totalMemory": 2074894336,
+  "usedMemory": 950370304
 }
+```
+
+### iOS İçin Native Module Oluşturma
+
+iOS tarafta native modül için interface ve implementation dosyaları oluşturmalıyız. Bu dosyalar, ios/{project_name}/ dizini altında oluşturulmalıdır. Oluşturulacak dosyalar AppDelegate ile aynı dizinde olmalıdır. İmplementasyon dosyası .m uzantılı olmalı, interface dosyası ise .h uzantılı olmalıdır.
+
+```bash
+ios/{project_name}/MemoryInfo.h
+ios/{project_name}/MemoryInfo.m
+```
+
+MemoryInfo.h dosyası
+
+```objc
+#import <React/RCTBridgeModule.h>
+
+@interface MemoryInfo : NSObject <RCTBridgeModule>
+
+@end
+```
+
+MemoryInfo.m dosyası
+
+```objc
+#import "MemoryInfo.h"
+
+@implementation MemoryInfo
+
+RCT_EXPORT_MODULE(MemoryInfo);
+
+@end
+```
+
+MemoryInfo sınıfı, React Native tarafından kullanılacak olan modülü temsil eder. `RCT_EXPORT_MODULE` ile dışa aktarılabilir bir modül oluşturulur. Bu fonksiyon, modülün adını belirler. Modül adı, React Native tarafından kullanılacak olan modülün adıdır. Bu durumda modül adı MemoryInfo olacaktır.
+
+MemoryInfo sınıfına bellek bilgilerini döndüren bir fonksiyon ekleyelim.
+
+```objc
+
+RCT_EXPORT_METHOD(getMemoryInfo:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+  @try {
+    mach_port_t host_port;
+    mach_msg_type_number_t host_size;
+    vm_size_t pagesize;
+
+    host_port = mach_host_self();
+    host_size = sizeof(vm_statistics_data_t) / sizeof(integer_t);
+    host_page_size(host_port, &pagesize);
+
+    vm_statistics_data_t vm_stat;
+
+    if (host_statistics(host_port, HOST_VM_INFO, (host_info_t)&vm_stat, &host_size) != KERN_SUCCESS) {
+        NSLog(@"Failed to fetch vm statistics");
+    }
+
+    natural_t mem_used = (vm_stat.active_count +
+                          vm_stat.inactive_count +
+                          vm_stat.wire_count) * pagesize;
+    natural_t mem_free = vm_stat.free_count * pagesize;
+    natural_t mem_total = mem_used + mem_free;
+    
+    resolve(@{
+      @"totalMemory": @(mem_total),
+      @"availableMemory": @(mem_free),
+      @"usedMemory": @(mem_used)
+    });
+
+  } @catch (NSException *exception) {
+    reject(@"exception", exception.reason, nil);
+  }
+}
+```
+
+Bu fonksiyonu kullanarak cihazın bellek bilgilerini aşağıdaki gibi alabiliriz.
+
+```typescript
+import { NativeModules } from 'react-native';
+
+const { MemoryInfo } = NativeModules;
+
+MemoryInfo.getMemoryInfo().then((memoryInfo) => {
+  console.log(memoryInfo);
+}).catch((error) => {
+  console.log(error);
+});
+```
+
+Çıktısı:
+
+```json
+{
+  "availableMemory": 86081536,
+  "totalMemory": 93208576,
+  "usedMemory": 7127040
+}
+```
+
+## TypeScript ile daha iyi bir Native Module oluşturma
+
+Oluşturmuş olduğumuz bu modülü TypeScript ile daha iyi bir şekilde kullanmak için `modules/MemoryInfo.ts` adında bir dosya oluşturup. Native tarafta tanımladığımız fonksiyonları burada tanımlayabiliriz.
+
+```typescript
+import {NativeModules} from 'react-native';
+
+const {MemoryInfo} = NativeModules;
+
+interface MemoryInfoInterFace {
+  getMemoryInfo: () => Promise<{
+    availableMemory: number;
+    totalMemory: number;
+    usedMemory: number;
+  }>;
+}
+
+export default MemoryInfo as MemoryInfoInterFace;
+```
+
+Yukarıdaki TypeScript tanımlaması ile type-safe bir şekilde modülü kullanabiliriz.
+
+```typescript
+import MemoryInfo from './modules/MemoryInfo';
+
+MemoryInfo.getMemoryInfo().then((memoryInfo) => {
+  console.log(memoryInfo);
+}).catch((error) => {
+  console.log(error);
+});
 ```

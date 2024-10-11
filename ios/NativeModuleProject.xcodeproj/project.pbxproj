@@ -12,6 +12,7 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		67E98AB52CB92EF8003D55BC /* MemoryModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 67E98AB42CB92EF8003D55BC /* MemoryModule.m */; };
 		7699B88040F8A987B510C191 /* libPods-NativeModuleProject-NativeModuleProjectTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-NativeModuleProject-NativeModuleProjectTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
@@ -41,6 +42,8 @@
 		5709B34CF0A7D63546082F79 /* Pods-NativeModuleProject.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NativeModuleProject.release.xcconfig"; path = "Target Support Files/Pods-NativeModuleProject/Pods-NativeModuleProject.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-NativeModuleProject-NativeModuleProjectTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NativeModuleProject-NativeModuleProjectTests.debug.xcconfig"; path = "Target Support Files/Pods-NativeModuleProject-NativeModuleProjectTests/Pods-NativeModuleProject-NativeModuleProjectTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-NativeModuleProject.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NativeModuleProject.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		67E98AB42CB92EF8003D55BC /* MemoryModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MemoryModule.m; sourceTree = "<group>"; };
+		67E98AB62CB92F05003D55BC /* MemoryModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MemoryModule.h; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = NativeModuleProject/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-NativeModuleProject-NativeModuleProjectTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NativeModuleProject-NativeModuleProjectTests.release.xcconfig"; path = "Target Support Files/Pods-NativeModuleProject-NativeModuleProjectTests/Pods-NativeModuleProject-NativeModuleProjectTests.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -86,6 +89,8 @@
 		13B07FAE1A68108700A75B9A /* NativeModuleProject */ = {
 			isa = PBXGroup;
 			children = (
+				67E98AB62CB92F05003D55BC /* MemoryModule.h */,
+				67E98AB42CB92EF8003D55BC /* MemoryModule.m */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -412,6 +417,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				67E98AB52CB92EF8003D55BC /* MemoryModule.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);

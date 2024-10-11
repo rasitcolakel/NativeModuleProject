@@ -5,18 +5,18 @@ import {
   StatusBar,
   useColorScheme,
   View,
-  NativeModules,
   Text,
   Button,
   StyleSheet,
 } from 'react-native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
-
-const {MemoryInfo} = NativeModules;
+import MemoryInfo, {MemoryInfoResponse} from './modules/MemoryInfo';
 
 const App = () => {
-  const [memoryInfo, setMemoryInfo] = React.useState(null);
+  const [memoryInfo, setMemoryInfo] = React.useState<MemoryInfoResponse | null>(
+    null,
+  );
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
