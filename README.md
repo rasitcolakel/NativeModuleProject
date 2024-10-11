@@ -274,3 +274,223 @@ MemoryInfo.getMemoryInfo().then((memoryInfo) => {
   console.log(error);
 });
 ```
+
+
+## Native View Oluşturma
+
+Android ve iOS kodlarını kullanarak, React Native tarafında modül aracılığıyla native view oluşturabiliriz. Oluşturulacak olan bu view için Android tarafta LoginActivity,
+iOS tarafta ise LoginViewController oluşturacağız. Bu view'da username, password ve login butonu olacak. Girilen username ve password bilgileri React Native tarafına event olarak gönderilecek.
+
+### Android İçin Native View Oluşturma
+
+Yukarıdaki açıklama için aşağıdaki dosyaları oluşturmamız gerekmekte.
+
+```bash
+.../{your_project_name}/NativeViewModule/NativeViewPackage.java
+.../{your_project_name}/NativeViewModule/NativeViewModule.java
+.../{your_project_name}/NativeViewModule/NativeViewContext.java
+.../{your_project_name}/NativeViewModule/LoginActivity.java
+```
+
+NativeViewModule.java
+
+```java
+public class NativeViewModule extends ReactContextBaseJavaModule {
+    private final ReactApplicationContext reactContext;
+
+    public NativeViewModule(ReactApplicationContext reactContext) {
+        super(reactContext);
+        this.reactContext = reactContext;
+    }
+
+    @Override
+    public String getName() {
+        return "NativeView";
+    }
+
+    @ReactMethod
+    public void open(){
+        Intent intent = new Intent(getCurrentActivity(), LoginActivity.class);
+        NativeViewContext.context = MainApplication.getMainApplication().getReactNativeHost().getReactInstanceManager().getCurrentReactContext();
+        getCurrentActivity().startActivity(intent);
+    }
+
+    public static void sendEventToJS(String eventName, @Nullable WritableMap data) {
+        NativeViewContext.context
+                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                .emit(eventName, data);
+    }
+}
+```
+
+NativeViewPackage.java
+
+```java
+public class NativeViewPackage implements ReactPackage {
+    @Override
+    public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
+        List<NativeModule> modules = new ArrayList<>();
+        modules.add(new NativeViewModule(reactContext));
+        return modules;
+    }
+
+    @Override
+    public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
+        return Collections.emptyList();
+    }
+}
+```
+
+LoginActivity.java
+
+```java
+public class LoginActivity extends AppCompatActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
+
+        EditText username = findViewById(R.id.username);
+        EditText password = findViewById(R.id.password);
+        Button login = findViewById(R.id.login);
+
+        login.setOnClickListener(v -> {
+            WritableMap map = Arguments.createMap();
+            map.putString("username", username.getText().toString());
+            map.putString("password", password.getText().toString());
+            NativeViewModule.sendEventToJS("onLogin", map);
+            finish();
+        });
+    }
+}
+```
+
+NativeViewContext.java
+
+```java
+public class NativeViewContext {
+    public static ReactContext context;
+}
+```
+
+### iOS İçin Native View Oluşturma
+
+Yukarıdaki açıklama için aşağıdaki dosyaları oluşturmamız gerekmekte.
+
+```bash
+.../{project_name}/NativeViewModule/NativeViewModule.h
+.../{project_name}/NativeViewModule/NativeViewModule.m
+.../{project_name}/NativeViewModule/LoginViewController.h
+.../{project_name}/NativeViewModule/LoginViewController.m
+```
+
+NativeViewModule.h
+
+```objc
+#import <React/RCTBridgeModule.h>
+#import <React/RCTEventEmitter.h>
+
+@interface NativeViewModule : RCTEventEmitter <RCTBridgeModule>
+
+@end
+
+```
+
+NativeViewModule.m
+
+```objc
+#import "NativeViewModule.h"
+#import "LoginViewController.h"
+
+@implementation NativeViewModule
+
+RCT_EXPORT_MODULE(NativeView);
+
+RCT_EXPORT_METHOD(open) {
+  dispatch_async(dispatch_get_main_queue(), ^{
+    LoginViewController *loginViewController = [[LoginViewController alloc] init];
+    loginViewController.delegate = self;
+    UIViewController *rootViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
+    [rootViewController presentViewController:loginViewController animated:YES completion:nil];
+  });
+}
+
+- (void)sendEventToJS:(NSString *)eventName withBody:(NSDictionary *)body {
+  [self sendEventWithName:eventName body:body];
+}
+
+- (NSArray<NSString *> *)supportedEvents {
+  return @[@"onLogin"];
+}
+
+@end
+
+```
+
+LoginViewController.h
+
+```objc
+#import <UIKit/UIKit.h>
+#import <React/RCTBridge.h>
+
+@protocol LoginViewControllerDelegate <NSObject>
+    - (void)sendEventToJS:(NSString *)eventName withBody:(NSDictionary *)body;
+@end
+
+@interface LoginViewController : UIViewController
+
+@property (nonatomic, weak) id<LoginViewControllerDelegate> delegate;
+
+@end
+```
+
+LoginViewController.m
+
+```objc
+#import "LoginViewController.h"
+
+@interface LoginViewController ()
+
+@property (nonatomic, strong) UITextField *username;
+@property (nonatomic, strong) UITextField *password;
+
+@end
+
+@implementation LoginViewController
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    self.view.backgroundColor = [UIColor whiteColor];
+    
+    CGFloat padding = 20.0;
+    CGFloat width = self.view.frame.size.width - 2 * padding;
+    
+    self.username = [[UITextField alloc] initWithFrame:CGRectMake(padding, 100, width, 40)];
+    self.username.placeholder = @"Username";
+    self.username.borderStyle = UITextBorderStyleRoundedRect;
+    [self.view addSubview:self.username];
+    
+    self.password = [[UITextField alloc] initWithFrame:CGRectMake(padding, 150, width, 40)];
+    self.password.placeholder = @"Password";
+    self.password.borderStyle = UITextBorderStyleRoundedRect;
+    [self.view addSubview:self.password];
+    
+    UIButton *login = [UIButton buttonWithType:UIButtonTypeSystem];
+    login.frame = CGRectMake(padding, 200, width, 40);
+    [login setTitle:@"Login" forState:UIControlStateNormal];
+    [login addTarget:self action:@selector(login) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:login];
+}
+
+- (void)login {
+    NSDictionary *data = @{
+        @"username": self.username.text,
+        @"password": self.password.text
+    };
+
+    [self.delegate sendEventToJS:@"onLogin" withBody:data];
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+@end
+```
