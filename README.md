@@ -85,9 +85,9 @@ protected List<ReactPackage> getPackages() {
 Modülü kullanmak
 
 ```typescript
-import { NativeModules } from 'react-native';
+import {NativeModules} from 'react-native';
 
-const { MemoryInfo } = NativeModules;
+const {MemoryInfo} = NativeModules;
 
 console.log(MemoryInfo);
 ```
@@ -129,13 +129,15 @@ Oluşturulan MemoryModule'e React Native taraftan erişebileceğimiz `getMemoryI
 Bu fonksiyonu kullanarak cihazın bellek bilgilerini alabiliriz.
 
 ```typescript
-import { NativeModules } from 'react-native';
+import {NativeModules} from 'react-native';
 
-MemoryInfo.getMemoryInfo().then((memoryInfo) => {
-  console.log(memoryInfo);
-}).catch((error) => {
-  console.log(error);
-});
+MemoryInfo.getMemoryInfo()
+  .then(memoryInfo => {
+    console.log(memoryInfo);
+  })
+  .catch(error => {
+    console.log(error);
+  });
 ```
 
 Çıktısı:
@@ -153,26 +155,26 @@ MemoryInfo.getMemoryInfo().then((memoryInfo) => {
 iOS tarafta native modül için interface ve implementation dosyaları oluşturmalıyız. Bu dosyalar, ios/{project_name}/ dizini altında oluşturulmalıdır. Oluşturulacak dosyalar AppDelegate ile aynı dizinde olmalıdır. İmplementasyon dosyası .m uzantılı olmalı, interface dosyası ise .h uzantılı olmalıdır.
 
 ```bash
-ios/{project_name}/MemoryInfo.h
-ios/{project_name}/MemoryInfo.m
+ios/{project_name}/MemoryModule.h
+ios/{project_name}/MemoryModule.m
 ```
 
-MemoryInfo.h dosyası
+MemoryModule.h dosyası
 
 ```objc
 #import <React/RCTBridgeModule.h>
 
-@interface MemoryInfo : NSObject <RCTBridgeModule>
+@interface MemoryModule : NSObject <RCTBridgeModule>
 
 @end
 ```
 
-MemoryInfo.m dosyası
+MemoryModule.m dosyası
 
 ```objc
-#import "MemoryInfo.h"
+#import "MemoryModule.h"
 
-@implementation MemoryInfo
+@implementation MemoryModule
 
 RCT_EXPORT_MODULE(MemoryInfo);
 
@@ -206,7 +208,7 @@ RCT_EXPORT_METHOD(getMemoryInfo:(RCTPromiseResolveBlock)resolve reject:(RCTPromi
                           vm_stat.wire_count) * pagesize;
     natural_t mem_free = vm_stat.free_count * pagesize;
     natural_t mem_total = mem_used + mem_free;
-    
+
     resolve(@{
       @"totalMemory": @(mem_total),
       @"availableMemory": @(mem_free),
@@ -222,15 +224,17 @@ RCT_EXPORT_METHOD(getMemoryInfo:(RCTPromiseResolveBlock)resolve reject:(RCTPromi
 Bu fonksiyonu kullanarak cihazın bellek bilgilerini aşağıdaki gibi alabiliriz.
 
 ```typescript
-import { NativeModules } from 'react-native';
+import {NativeModules} from 'react-native';
 
-const { MemoryInfo } = NativeModules;
+const {MemoryInfo} = NativeModules;
 
-MemoryInfo.getMemoryInfo().then((memoryInfo) => {
-  console.log(memoryInfo);
-}).catch((error) => {
-  console.log(error);
-});
+MemoryInfo.getMemoryInfo()
+  .then(memoryInfo => {
+    console.log(memoryInfo);
+  })
+  .catch(error => {
+    console.log(error);
+  });
 ```
 
 Çıktısı:
@@ -243,7 +247,7 @@ MemoryInfo.getMemoryInfo().then((memoryInfo) => {
 }
 ```
 
-## TypeScript ile daha iyi bir Native Module oluşturma
+## TypeScript ile daha iyi bir Native Module oluşturma
 
 Oluşturmuş olduğumuz bu modülü TypeScript ile daha iyi bir şekilde kullanmak için `modules/MemoryInfo.ts` adında bir dosya oluşturup. Native tarafta tanımladığımız fonksiyonları burada tanımlayabiliriz.
 
@@ -268,13 +272,14 @@ Yukarıdaki TypeScript tanımlaması ile type-safe bir şekilde modülü kullana
 ```typescript
 import MemoryInfo from './modules/MemoryInfo';
 
-MemoryInfo.getMemoryInfo().then((memoryInfo) => {
-  console.log(memoryInfo);
-}).catch((error) => {
-  console.log(error);
-});
+MemoryInfo.getMemoryInfo()
+  .then(memoryInfo => {
+    console.log(memoryInfo);
+  })
+  .catch(error => {
+    console.log(error);
+  });
 ```
-
 
 ## Native View Oluşturma
 
@@ -459,22 +464,22 @@ LoginViewController.m
 @implementation LoginViewController
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     self.view.backgroundColor = [UIColor whiteColor];
-    
+
     CGFloat padding = 20.0;
     CGFloat width = self.view.frame.size.width - 2 * padding;
-    
+
     self.username = [[UITextField alloc] initWithFrame:CGRectMake(padding, 100, width, 40)];
     self.username.placeholder = @"Username";
     self.username.borderStyle = UITextBorderStyleRoundedRect;
     [self.view addSubview:self.username];
-    
+
     self.password = [[UITextField alloc] initWithFrame:CGRectMake(padding, 150, width, 40)];
     self.password.placeholder = @"Password";
     self.password.borderStyle = UITextBorderStyleRoundedRect;
     [self.view addSubview:self.password];
-    
+
     UIButton *login = [UIButton buttonWithType:UIButtonTypeSystem];
     login.frame = CGRectMake(padding, 200, width, 40);
     [login setTitle:@"Login" forState:UIControlStateNormal];
@@ -493,4 +498,59 @@ LoginViewController.m
 }
 
 @end
+```
+
+## React Native tarafında Native View kullanımı
+
+```typescript
+useEffect(() => {
+  addListenerToEvent('onLogin', data => {
+    console.log('Event received:', data);
+  });
+
+  return () => {
+    removeListenerFromEvent('onLogin');
+  };
+}, []);
+```
+
+### TypeScript ile daha iyi bir Native View için Type Definitions
+
+```typescript
+import {NativeEventEmitter, NativeModules, Platform} from 'react-native';
+
+const {NativeView} = NativeModules;
+
+/**
+ * Interface representing native view functionality.
+ */
+interface NativeViewInterface {
+  /**
+   * Opens a native view.
+   */
+  open: () => void;
+}
+
+const eventEmitter =
+  Platform.OS === 'android'
+    ? new NativeEventEmitter()
+    : new NativeEventEmitter(NativeView);
+
+export type LoginEvent = {
+  username: string;
+  password: string;
+};
+
+export function addListenerToEvent(
+  event: string,
+  listener: (data: LoginEvent) => void,
+) {
+  eventEmitter.addListener(event, listener);
+}
+
+export function removeListenerFromEvent(event: string) {
+  eventEmitter.removeAllListeners(event);
+}
+
+export default NativeView as NativeViewInterface;
 ```

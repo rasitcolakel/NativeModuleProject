@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 70;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -12,6 +12,8 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		5681C7A62CB95DEF002DD1DA /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5681C7A22CB95DEF002DD1DA /* LoginViewController.m */; };
+		5681C7A72CB95DEF002DD1DA /* NativeViewModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 5681C7A42CB95DEF002DD1DA /* NativeViewModule.m */; };
 		67E98AB52CB92EF8003D55BC /* MemoryModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 67E98AB42CB92EF8003D55BC /* MemoryModule.m */; };
 		7699B88040F8A987B510C191 /* libPods-NativeModuleProject-NativeModuleProjectTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-NativeModuleProject-NativeModuleProjectTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
@@ -39,6 +41,10 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = NativeModuleProject/main.m; sourceTree = "<group>"; };
 		19F6CBCC0A4E27FBF8BF4A61 /* libPods-NativeModuleProject-NativeModuleProjectTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NativeModuleProject-NativeModuleProjectTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B4392A12AC88292D35C810B /* Pods-NativeModuleProject.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NativeModuleProject.debug.xcconfig"; path = "Target Support Files/Pods-NativeModuleProject/Pods-NativeModuleProject.debug.xcconfig"; sourceTree = "<group>"; };
+		5681C7A12CB95DEF002DD1DA /* LoginViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
+		5681C7A22CB95DEF002DD1DA /* LoginViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
+		5681C7A32CB95DEF002DD1DA /* NativeViewModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NativeViewModule.h; sourceTree = "<group>"; };
+		5681C7A42CB95DEF002DD1DA /* NativeViewModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NativeViewModule.m; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-NativeModuleProject.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NativeModuleProject.release.xcconfig"; path = "Target Support Files/Pods-NativeModuleProject/Pods-NativeModuleProject.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-NativeModuleProject-NativeModuleProjectTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NativeModuleProject-NativeModuleProjectTests.debug.xcconfig"; path = "Target Support Files/Pods-NativeModuleProject-NativeModuleProjectTests/Pods-NativeModuleProject-NativeModuleProjectTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-NativeModuleProject.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NativeModuleProject.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -48,10 +54,6 @@
 		89C6BE57DB24E9ADA2F236DE /* Pods-NativeModuleProject-NativeModuleProjectTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NativeModuleProject-NativeModuleProjectTests.release.xcconfig"; path = "Target Support Files/Pods-NativeModuleProject-NativeModuleProjectTests/Pods-NativeModuleProject-NativeModuleProjectTests.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		67E98AB72CB94FBE003D55BC /* NativeView */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = NativeView; sourceTree = "<group>"; };
-/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		00E356EB1AD99517003FC87E /* Frameworks */ = {
@@ -93,7 +95,7 @@
 		13B07FAE1A68108700A75B9A /* NativeModuleProject */ = {
 			isa = PBXGroup;
 			children = (
-				67E98AB72CB94FBE003D55BC /* NativeView */,
+				5681C7A52CB95DEF002DD1DA /* NativeView */,
 				67E98AB62CB92F05003D55BC /* MemoryModule.h */,
 				67E98AB42CB92EF8003D55BC /* MemoryModule.m */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -114,6 +116,17 @@
 				19F6CBCC0A4E27FBF8BF4A61 /* libPods-NativeModuleProject-NativeModuleProjectTests.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		5681C7A52CB95DEF002DD1DA /* NativeView */ = {
+			isa = PBXGroup;
+			children = (
+				5681C7A12CB95DEF002DD1DA /* LoginViewController.h */,
+				5681C7A22CB95DEF002DD1DA /* LoginViewController.m */,
+				5681C7A32CB95DEF002DD1DA /* NativeViewModule.h */,
+				5681C7A42CB95DEF002DD1DA /* NativeViewModule.m */,
+			);
+			path = NativeView;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -198,9 +211,6 @@
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				67E98AB72CB94FBE003D55BC /* NativeView */,
 			);
 			name = NativeModuleProject;
 			productName = NativeModuleProject;
@@ -426,6 +436,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				67E98AB52CB92EF8003D55BC /* MemoryModule.m in Sources */,
+				5681C7A62CB95DEF002DD1DA /* LoginViewController.m in Sources */,
+				5681C7A72CB95DEF002DD1DA /* NativeViewModule.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);

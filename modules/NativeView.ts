@@ -1,4 +1,4 @@
-import {NativeEventEmitter, NativeModules} from 'react-native';
+import {NativeEventEmitter, NativeModules, Platform} from 'react-native';
 
 const {NativeView} = NativeModules;
 
@@ -12,7 +12,10 @@ interface NativeViewInterface {
   open: () => void;
 }
 
-const eventEmitter = new NativeEventEmitter(NativeView);
+const eventEmitter =
+  Platform.OS === 'android'
+    ? new NativeEventEmitter()
+    : new NativeEventEmitter(NativeView);
 
 export type LoginEvent = {
   username: string;
